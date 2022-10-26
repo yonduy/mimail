@@ -6,7 +6,7 @@ module.exports = {
             '/api': {
                 target: 'https://www.imooc.com',
                 changeOrigin:false
-            }
+            } 
         }
     }
 }
