@@ -24,16 +24,13 @@ export default {
     //本地集成mockjs实现数据mock
     this.axios.get('user/login').then((res)=>{
       this.res = res
-
-
     })
-
-   
-
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 @import './assets/scss/reset.scss';
+@import './assets/scss/button.scss';
+@import './assets/scss/config.scss';
 </style>
