@@ -1,6 +1,5 @@
 <template>
     <div class="index">
-        indexindex
         <div class="container">
             <div class="swiper-box">
                 <div class="nav-menu">
@@ -83,12 +82,12 @@
                             <div class="item" v-for="(item,j) in arr" v-bind:key="j">
                                 <span v-bind:class="{'new-pro':j%2==0}">新品</span>
                                 <div class="item-img">
-                                    <img v-bind:src="item.mainImge" alt="">
+                                    <img v-bind:src="item.mainImage" alt="">
                                 </div>
                                 <div class="item-info">
                                     <h3>{{item.name}}</h3>
                                     <p>{{item.subtitle}}</p>
-                                    <p class="price">{{item.price}}元</p>
+                                    <p class="price" @click="addCart(item.id)">{{item.price}}元</p>
                                 </div>
                             </div>
                         </div>
@@ -98,11 +97,24 @@
                 
             </div>
        <service-bar></service-bar>
+       <modal title="提示" 
+       sureText="查看购物车" 
+       btnType="1" 
+       modalType="middle"
+       v-bind:showModal="showModal"
+       v-on:submit="goToCart"
+       v-on:cancel="showModal=false"
+       >
+       <template v-slot:body>
+            <p>商品添加成功！</p>
+       </template>
+        </modal>
     </div>
 </template>
 
 <script>
 import ServiceBar from './../components/ServiceBar'
+import Modal from './../components/Modal'
 import { swiper,swiperSlide } from 'vue-awesome-swiper'
 import './../../node_modules/swiper/dist/css/swiper.css'
 export default {
@@ -110,7 +122,8 @@ export default {
     components:{
         swiper,
         swiperSlide,
-        ServiceBar
+        ServiceBar,
+        Modal
     },
     data(){
         return {
@@ -122,10 +135,10 @@ export default {
                     slideShadows:true,
                     shadow:true,
                     shadowOffset:100,
-                    shadowScale:0.6
+                    shadowScale:0.3
                 },
                 pagination:{
-                    el:'swiper-pagination',
+                    el:'.swiper-pagination',
                     clickable:true
                 },
                 navigation:{
@@ -162,22 +175,22 @@ export default {
                 [
                     {
                         id:30,
-                        img:'/imgs/item-boc-1.png',
+                        img:'/imgs/item-box-1.png',
                         name:'小米CC9'
                     },
                     {
                         id:31,
-                        img:'/imgs/item-boc-2.png',
+                        img:'/imgs/item-box-2.png',
                         name:'小米8青春版'
                     },
                     {
                         id:32,
-                        img:'/imgs/item-boc-3.jpg',
+                        img:'/imgs/item-box-3.jpg',
                         name:'Redmi K20 Pro'
                     },
                     {
                         id:33,
-                        img:'/imgs/item-boc-4.jpg',
+                        img:'/imgs/item-box-4.jpg',
                         name:'移动4G专区'
                     }
                 ],
@@ -186,22 +199,23 @@ export default {
             adsList:[
                 {
                     id:33,
-                    img:'/ims/ads/ads-1.png'
+                    img:'/imgs/ads/ads-1.png'
                 },
                 {
                     id:48,
-                    img:'/ims/ads/ads-2.jpg'
+                    img:'/imgs/ads/ads-2.jpg'
                 },
                 {
                     id:45,
-                    img:'/ims/ads/ads-3.png'
+                    img:'/imgs/ads/ads-3.png'
                 },
                 {
                     id:47,
-                    img:'/ims/ads/ads-4.jpg'
+                    img:'/imgs/ads/ads-4.jpg'
                 }
             ],
-            phoneList:[]
+            phoneList:[],
+            showModal:false
         }
 
     },
@@ -214,11 +228,26 @@ export default {
             this.axios.get('/products',{
                 params:{
                     categoryId:100012,
-                    pageSize:8
+                    pageSize:14
                 }
             }).then((res)=>{
+                res.list=res.list.slice(6,14);
                 this.phoneList=[res.list.slice(0,4),res.list.slice(4,8)]
             })
+        },
+        addCart(){
+            this.showModal=true;
+            /* this.axios.post('/carts',{
+                productId:id,
+                selected:true
+            }).then(()=>{
+
+            }).catch(())=>{
+                this.showModal=true;
+            } */
+        },
+        goToCart(){
+            this.$router.push('/cart')
         }
 
     }
@@ -239,7 +268,7 @@ export default {
                 box-sizing: border-box;
                 .menu-wrap{
                     .menu-item{
-                        height: 20px;
+                        height: 50px;
                         line-height: 50px;
                         a{
                             position: relative;
@@ -251,16 +280,15 @@ export default {
                             position:absolute;
                             right:30px;
                             top:17.5px;
-                            content:'';
-                            @include boImg(10px,15px,'/img/icon-arrow.png')
+                            content:' ';
+                            @include bgImg(10px,15px,'/imgs/icon-arrow.png');
 
                         }
                         }
                         &:hover{
                             background: $colorA;
                             .children{
-                                display:blcok;
-
+                                display:block;
                             }
                         }
                         .children{
@@ -315,7 +343,7 @@ export default {
             margin-top:14px;
             margin-bottom:31px;
             a{
-                width:196px;
+                width:296px;
                 height: 167px;
             }
         }
@@ -393,7 +421,7 @@ export default {
                                     font-weight: bold;
                                     cursor:pointer;
                                     &:after{
-                                        @include bgImg(22px,22px,'/img/icon-cart-hover.png');
+                                        @include bgImg(22px,22px,'/imgs/icon-cart-hover.png');
                                         content: '';
                                         margin-left:5px;
                                         vertical-align: middle;
